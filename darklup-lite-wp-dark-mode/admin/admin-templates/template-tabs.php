@@ -25,7 +25,7 @@
                             transform="translate(-169.765 -262.331)" fill="#3700b3" />
                     </g>
                 </svg>
-                <?php echo esc_html( 'Home', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Home', 'darklup-lite' ); ?>
             </a>
         </li>
         <li>
@@ -46,7 +46,7 @@
                             transform="translate(-480.092 315)" fill="#3700b3" />
                     </g>
                 </svg>
-                <?php echo esc_html( 'Advance Settings', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Advance Settings', 'darklup-lite' ); ?>
             </a>
         </li>
 
@@ -62,7 +62,7 @@
                             transform="translate(-51.295 -367.806)" fill="#3700b3" />
                     </g>
                 </svg>
-                <?php echo esc_html( 'Color Settings', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Color Settings', 'darklup-lite' ); ?>
             </a>
         </li>
 
@@ -104,7 +104,7 @@
                         </g>
                     </g>
                 </svg>
-                <?php echo esc_html( 'Switch Styles', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Switch Styles', 'darklup-lite' ); ?>
             </a>
         </li>
 
@@ -127,7 +127,7 @@
                             transform="translate(0 0)" fill="#3700b3" />
                     </g>
                 </svg>
-                <?php echo esc_html( 'Image Settings', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Image Settings', 'darklup-lite' ); ?>
             </a>
         </li>
         <li>
@@ -138,7 +138,7 @@
                     fill="#2277e8" />
             </svg>
 
-                <?php echo esc_html( 'Exclude Settings', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Exclude Settings', 'darklup-lite' ); ?>
             </a>
         </li>
         <li class="darkluplite_custom_css_settings">
@@ -161,7 +161,7 @@
                             d="M16.853,14.894V13.812a.271.271,0,0,1,.271-.271.271.271,0,0,0,0-.541.813.813,0,0,0-.812.812v1.082a.542.542,0,0,1-.541.541.271.271,0,0,0,0,.541.542.542,0,0,1,.541.541V17.6a.813.813,0,0,0,.812.812.271.271,0,0,0,0-.541.271.271,0,0,1-.271-.271V16.517a1.075,1.075,0,0,0-.374-.812A1.075,1.075,0,0,0,16.853,14.894Z"
                             transform="translate(-6.375 -9.483)" fill="#3700b3" stroke="#3700b3" stroke-width="0.2" />
                     </g>
-                </svg><?php echo esc_html( 'Custom CSS', 'darklup-lite' ); ?>
+                </svg><?php echo esc_html__( 'Custom CSS', 'darklup-lite' ); ?>
             </a>
         </li>
 
@@ -189,7 +189,7 @@
                             transform="translate(-16.25 -2.79)" fill="#3700b3" />
                     </g>
                 </svg>
-                <?php echo esc_html( 'Usage Analytics', 'darklup-lite' ); ?>
+                <?php echo esc_html__( 'Usage Analytics', 'darklup-lite' ); ?>
             </a>
         </li>
     </ul>

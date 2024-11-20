@@ -1,15 +1,15 @@
 === Darklup - Enhanced WordPress Dark Mode, Dark Theme, Night Mode Plugin ===
 Contributors: darklup, wpcommerz, devmahbub
 Donate link: https://darklup.com/
-Tags: dark mode plugin, dark, dark mode, dark theme, WordPress dark mode, night mode, wp dark mode
+Tags: dark mode plugin, dark mode, dark theme, WordPress dark mode, wp dark mode
 Requires PHP: 7.4
 Requires at least: 6.5
-Tested up to: 6.6.2
-Stable tag: 3.2.6
+Tested up to: 6.7
+Stable tag: 3.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Experience Darklup — Your WordPress ally for dark mode, dark themes, and night mode. Switch to an eye-friendly dark view. Ideal for night time browsing.
+Experience Darklup — Your WordPress ally for dark mode, dark themes, and night mode. Switch to an eye-friendly dark view.
 
 == Description ==
 
@@ -247,6 +247,12 @@ screenshot-3.png
 screenshot-4.png
 
 == Changelog ==
+
+= 3.2.7 =
+
+1. Compatible with latest WordPress version 6.7
+2. Fixed Translate string missing issue 
+3. Update POT file
 
 = 3.2.6 =
 1. Compatible with latest WordPress version.
