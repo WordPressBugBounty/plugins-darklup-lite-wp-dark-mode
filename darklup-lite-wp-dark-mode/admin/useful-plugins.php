@@ -30,7 +30,7 @@ $single_plugins_allowedtags = [
 
 $recommended_plugins_slug = [
 	'guidant',
-	'wceazy',
+	'hive-support',
 ];
 
 /**
@@ -100,16 +100,16 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 					$group = $single_plugin['group'];
 				}
 
-				$plugin_title = wp_kses( $single_plugin['name'], $single_plugins_allowedtags );
+				$plugin_title = wp_kses( $single_plugin['name'] ?? '' , $single_plugins_allowedtags );
 
 				// Remove any HTML from the description.
-				$description = wp_strip_all_tags( $single_plugin['short_description'] );
+				$description = wp_strip_all_tags( $single_plugin['short_description'] ?? '' );
 
-				$version = wp_kses( $single_plugin['version'], $single_plugins_allowedtags );
+				$version = wp_kses( $single_plugin['version'] ?? '' , $single_plugins_allowedtags );
 
 				$name = wp_strip_all_tags( $plugin_title . ' ' . $version );
 
-				$author = wp_kses( $single_plugin['author'], $single_plugins_allowedtags );
+				$author = wp_kses( $single_plugin['author'] ?? '' , $single_plugins_allowedtags );
 
 				if ( ! empty( $author ) ) {
 					/* translators: %s: Plugin author. */
@@ -195,7 +195,7 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 								$action_links[] = sprintf(
 									'<a href="%1$s" class="button activate-now" aria-label="%2$s">%3$s</a>',
 									esc_url( $activate_url ),
-									esc_attr( sprintf( $button_label, $single_plugin['name'] ) ),
+									esc_attr( sprintf( $button_label, $single_plugin['name'] ?? '' ) ),
 									$button_text
 								);
 							} else {
@@ -208,10 +208,10 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 					}
 				}
 
-				$details_link = self_admin_url(
+				$details_link = !empty( $single_plugin['slug'] ) ? self_admin_url(
 					'plugin-install.php?tab=plugin-information&amp;plugin=' . $single_plugin['slug'] .
 					'&amp;TB_iframe=true&amp;width=600&amp;height=550'
-				);
+				) : '';
 
 				$action_links[] = wp_sprintf(
 					'<a href="%s" class="thickbox open-plugin-details-modal" aria-label="%s" data-title="%s">%s</a>',
@@ -229,7 +229,7 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 				} elseif ( ! empty( $single_plugin['icons']['1x'] ) ) {
 					$single_plugin_icon_url = $single_plugin['icons']['1x'];
 				} else {
-					$single_plugin_icon_url = $single_plugin['icons']['default'];
+					$single_plugin_icon_url = $single_plugin['icons']['default'] ?? '';
 				}
 
 				/**
@@ -242,7 +242,7 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 				 */
 				$action_links = apply_filters( 'plugin_install_action_links', $action_links, $single_plugin );
 
-				$last_updated_timestamp = strtotime( $single_plugin['last_updated'] );
+				$last_updated_timestamp = !empty( $single_plugin['last_updated'] ) ? strtotime( $single_plugin['last_updated'] ) : '';
 				?>
 				<div class="plugin-card plugin-card-<?php echo esc_attr( $single_plugin['slug'] ); ?>">
 					<?php
@@ -321,13 +321,13 @@ $recommended_plugins = array_map('callback_recommended_plugin', $recommended_plu
 							<?php
 							wp_star_rating(
 								[
-									'rating' => $single_plugin['rating'],
+									'rating' => $single_plugin['rating'] ?? '',
 									'type'   => 'percent',
-									'number' => $single_plugin['num_ratings'],
+									'number' => $single_plugin['num_ratings'] ?? '',
 								]
 							);
 							?>
-							<span class="num-ratings" aria-hidden="true">(<?php echo esc_html( $single_plugin['num_ratings'] ); ?>)</span>
+							<span class="num-ratings" aria-hidden="true">(<?php echo esc_html( $single_plugin['num_ratings'] ?? '' ); ?>)</span>
 						</div>
 						<div class="column-updated">
 							<strong><?php esc_html_e( 'Last Updated:', 'darklup-lite' ); ?></strong>
