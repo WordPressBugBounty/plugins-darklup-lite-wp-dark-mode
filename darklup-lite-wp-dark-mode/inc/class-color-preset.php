@@ -11,7 +11,7 @@ namespace DarklupLite;
  */
 
 /**
- * Hooks class
+ * Hooks class here
  */
 class Color_Preset
 {

@@ -4,8 +4,8 @@ Donate link: https://darklup.com/
 Tags: dark mode plugin, dark mode, dark theme, WordPress dark mode, wp dark mode
 Requires PHP: 7.4
 Requires at least: 6.5
-Tested up to: 6.7.1
-Stable tag: 3.2.9
+Tested up to: 6.8.1
+Stable tag: 3.2.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -247,6 +247,11 @@ screenshot-3.png
 screenshot-4.png
 
 == Changelog ==
+
+= 3.2.11 =
+
+1. Improved: Performance Improved.
+2. Fixed minor issues
 
 = 3.2.9 =
 
