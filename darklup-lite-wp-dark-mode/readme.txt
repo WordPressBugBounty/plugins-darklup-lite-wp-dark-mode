@@ -4,8 +4,8 @@ Donate link: https://darklup.com/
 Tags: dark mode plugin, dark mode, dark theme, WordPress dark mode, wp dark mode
 Requires PHP: 7.4
 Requires at least: 6.5
-Tested up to: 6.8.1
-Stable tag: 3.2.12
+Tested up to: 6.8.2
+Stable tag: 3.2.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,9 +68,14 @@ Experience Darklup — Your WordPress ally for dark mode, dark themes, and night
 	<li><strong>Set Button Size:</strong> You can change the dark mode switch button size. Floating Switch can be scaled to increase or decrease size maintaining the aspect ratio.</li>
 	<li><strong>Switch Preview:</strong> You can see the Floating Switch live preview on Plugin Back-end.</li>
 	<li><strong>Well Documented:</strong> You can find the full-fledged information and proper installation guide in the “documentation” section of the Darklup plugin.</li>
+	<li><strong>Exclude from Caching:</strong> You can prevent Darklup from being cached by plugins like WP Rocket and others.</li>
 </ol>
 
+Exclude from Caching: You can prevent Darklup from being cached by plugin like WP Rocket and others.
 
+Prevent Darklup from being cached by plugin like WP Rocket and others.
+
+Helps avoid dark mode conflicts on sites using server-side caching tools like LiteSpeed or WP Rocket by optionally excluding Darklup from being cached.
 
 <h3>🔥 WordPress Dark Mode Plugin PRO Features:</h3>
 <ol>
@@ -247,6 +252,10 @@ screenshot-3.png
 screenshot-4.png
 
 == Changelog ==
+
+= 3.2.13 =
+
+1. Fixed: Minor issues
 
 = 3.2.12 =
 

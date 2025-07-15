@@ -77,7 +77,7 @@ class Advance_Settings_Tab extends Settings_Fields_Base
         ]);
         $this->switch_field([
             'title' => esc_html__('Exclude Darklup from Caching', 'darklup-lite'),
-            'sub_title' => esc_html__('Enable this feature to exclude Darklup from server-side caching technology like Lightspeed Cache, WPRocket etc.', 'darklup-lite'),
+            'sub_title' => esc_html__('Prevent Darklup from being cached by plugin like WP Rocket and others.', 'darklup-lite'),
             'name' => 'exclude_from_cahcing',
         ]);
         $this->end_fields_section();
