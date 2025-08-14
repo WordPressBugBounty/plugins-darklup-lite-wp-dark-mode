@@ -13,7 +13,7 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper class
+ * Helper class (Mostly Static Methods)
  */
 class Helper{
 
