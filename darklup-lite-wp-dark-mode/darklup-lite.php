@@ -4,7 +4,7 @@
  * Plugin Name:       Darklup
  * Plugin URI:        https://darklup.com/
  * Description:       All in one WordPress plugin to create a stunning dark version for your WordPress website and dashboard.
- * Version:           3.2.15
+ * Version:           3.2.16
  * Author:            Darklup
  * Author URI:        https://darklup.com/
  * License:           GPL v2 or later
@@ -25,7 +25,7 @@ if (!defined('DARKLUPLITE_ALERT_MSG')) {
 
 // Version constant
 if (!defined('DARKLUPLITE_VERSION')) {
-    define('DARKLUPLITE_VERSION', '3.2.15');
+    define('DARKLUPLITE_VERSION', '3.2.16');
 }
 
 // Plugin dir path constant
@@ -67,6 +67,13 @@ function pluginDarklupLiteDeleted()
 add_action('init', function() {
     load_plugin_textdomain( 'darklup-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 });
+
+// Ask for review notice (admin only).
+if ( is_admin() ) {
+    require_once DARKLUPLITE_DIR_ADMIN . 'inc/class-darklup-ask-review.php';
+    $darklup_ask_review = new DarklupLite\Darklup_Ask_Review();
+    $darklup_ask_review->hooks();
+}
 
 
 /**
@@ -150,6 +157,7 @@ final class DarklupLite
         require_once DARKLUPLITE_DIR_ADMIN . 'setting-fields/class-settings-fields.php';
         require_once DARKLUPLITE_DIR_ADMIN . 'admin.php';
         require_once DARKLUPLITE_DIR_ADMIN . 'inc/class-admin-page.php';
+
         require_once DARKLUPLITE_DIR_PAGE_BUILDER . 'shortcode/class-switch-shortcode.php';
         require_once DARKLUPLITE_DIR_PAGE_BUILDER . 'wpbakery/darkluplite-vc-init.php';
 
