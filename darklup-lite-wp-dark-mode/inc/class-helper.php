@@ -65,6 +65,45 @@ class Helper{
     return $value;
 
   }
+
+  /**
+   * True when Darklup Pro is active. Free and Pro share the same script handles; Pro must own
+   * the frontend engine, hooks, and ally UI when both plugins are required together.
+   *
+   * @return bool
+   */
+  public static function is_pro_active() {
+    if ( ! function_exists( 'is_plugin_active' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+    if ( is_plugin_active( 'darklup/darklup.php' ) ) {
+        return true;
+    }
+    if ( is_multisite() && is_plugin_active_for_network( 'darklup/darklup.php' ) ) {
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * Display On — master toggle for the floating switch (and ally trigger).
+   * Unset option = on (legacy users don't lose functionality). Stored 'no'
+   * explicitly disables every device. Uses a raw option read so the
+   * literal 'no' value is never silently dropped by empty() checks.
+   *
+   * @return bool
+   */
+  public static function isDisplayFloatingSwitchEnabled() {
+    $options = get_option( 'darkluplite_settings', array() );
+
+    if ( ! is_array( $options ) || ! array_key_exists( 'display_floating_switch_enabled', $options ) ) {
+        return true;
+    }
+
+    $value = $options['display_floating_switch_enabled'];
+
+    return 'yes' === $value || 1 === $value || '1' === (string) $value;
+  }
   /**
    * get time list
    * 
