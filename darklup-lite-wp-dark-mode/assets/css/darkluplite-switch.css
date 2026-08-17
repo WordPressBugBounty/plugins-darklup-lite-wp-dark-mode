@@ -35,6 +35,8 @@
 }
 
 .darkluplite-switch-container {
+  display: flex;
+  align-items: center;
   width: var(--darkluplite-btn-width);
   height: var(--darkluplite-btn-height);
 }
@@ -79,6 +81,16 @@
   opacity: 0;
   width: 0;
   height: 0;
+}
+
+.darkluplite-menu-switch {
+    display: flex !important;
+    align-items: center;
+}
+
+/* OceanWP theme menu button switcher */
+ul.sf-menu.wpc--darkluplite-element{
+  display: flex;
 }
 
 /* ----- Style 1 ------ */
@@ -311,4 +323,14 @@
     var(--darkluplite-btn-width) -
       calc(calc(90 * var(--darkluplite-btn-icon-width)) / 100)
   );
+}
+
+
+/* Responsive CSS for dark mode switcher */
+
+@media (max-width:768px){
+  /* OceanWP theme menu button switcher */
+  ul.wpc--darkluplite-element{
+    display: block;
+  }
 }

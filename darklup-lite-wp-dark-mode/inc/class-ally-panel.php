@@ -53,6 +53,39 @@ class Ally_Panel {
 		'hideImages',
 	);
 
+	/**
+	 * Available trigger icon variants.
+	 *
+	 * Each variant declares the SVG basename used for the "off" (light) state and
+	 * the "on" (dark-mode active) state. Variants whose two states differ are
+	 * swapped at runtime by darklup-ally.js, so the trigger doubles as a visual
+	 * indicator of the current dark-mode state.
+	 *
+	 * @var array<string, array<string, string>>
+	 */
+	private static $trigger_icons = array(
+		'accessibility' => array(
+			'off'   => 'ally-trigger',
+			'on'    => 'ally-trigger',
+			'shape' => 'circle',
+		),
+		'sun_moon'      => array(
+			'off'   => 'ally-trigger-sun',
+			'on'    => 'ally-trigger-moon',
+			'shape' => 'circle',
+		),
+		'lightbulb'     => array(
+			'off'   => 'ally-trigger-bulb-off',
+			'on'    => 'ally-trigger-bulb-on',
+			'shape' => 'circle',
+		),
+		'slider'        => array(
+			'off'   => 'ally-trigger-slider-off',
+			'on'    => 'ally-trigger-slider-on',
+			'shape' => 'pill',
+		),
+	);
+
 	// =========================================================================
 	// SINGLETON
 	// =========================================================================
@@ -141,6 +174,35 @@ class Ally_Panel {
 		return $size;
 	}
 
+	/**
+	 * Validated trigger icon variant key.
+	 *
+	 * Falls back to the classic accessibility person glyph whenever the stored
+	 * value is empty or references an unknown variant.
+	 *
+	 * @return string One of the keys of self::$trigger_icons.
+	 */
+	private function getTriggerIconSafely() {
+		$icon = $this->getAllySetting( 'trigger_icon', 'accessibility' );
+
+		if ( ! is_string( $icon ) || ! array_key_exists( $icon, self::$trigger_icons ) ) {
+			$icon = 'accessibility';
+		}
+		return $icon;
+	}
+
+	/**
+	 * Public map of the available trigger icon variants.
+	 *
+	 * Consumed by the admin settings template so the picker and the frontend can
+	 * never drift apart.
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	public static function getTriggerIconVariants() {
+		return self::$trigger_icons;
+	}
+
 	// =========================================================================
 	// DEFAULTS — write once
 	// =========================================================================
@@ -163,6 +225,7 @@ class Ally_Panel {
 
 		$defaults = array(
 			'ally_trigger_size'           => 'M',
+			'ally_trigger_icon'           => 'accessibility',
 			'ally_switch_bg_color'        => '#2563eb',
 			'ally_switch_icon_color'      => '#ffffff',
 			'ally_switch_position'        => 'bottom_right',
@@ -260,6 +323,8 @@ class Ally_Panel {
 					'readingMask'    => $this->getAllySetting( 'module_reading_mask',    'yes' ),
 					'hideImages'     => $this->getAllySetting( 'module_hide_images',     'yes' ),
 				),
+				'triggerIcon'   => $this->getTriggerIconSafely(),
+				'triggerIconMap'=> self::$trigger_icons,
 				'isPro'         => false,
 				'upgradeUrl'    => self::UPGRADE_URL,
 			)
@@ -386,19 +451,34 @@ class Ally_Panel {
 	 * @return void
 	 */
 	private function renderTrigger( $position, $css_vars ) {
+
 		$size       = $this->getSizeSafely();
 		$size_class = 'ally-size-' . strtolower( $size );
+
+		// Icon variant (accessibility | sun_moon | lightbulb | slider).
+		$icon_key    = $this->getTriggerIconSafely();
+		$icon_config = self::$trigger_icons[ $icon_key ];
+		$icon_class  = 'ally-icon-' . str_replace( '_', '-', $icon_key );
+		$shape_class = 'ally-shape-' . $icon_config['shape'];
+
+		// Server-side initial state: honour the visitor's saved dark mode where the
+		// engine already knows it, otherwise start in the "off" state and let
+		// darklup-ally.js swap on boot from localStorage.
+		$icon_name = $icon_config['off'];
 		?>
 		<button id="darklup-ally-trigger"
-			class="darklup-ally-trigger darkluplite-dark-ignore <?php echo esc_attr( $position ); ?> <?php echo esc_attr( $size_class ); ?>"
+			class="darklup-ally-trigger darkluplite-dark-ignore <?php echo esc_attr( $position ); ?> <?php echo esc_attr( $size_class ); ?> <?php echo esc_attr( $icon_class ); ?> <?php echo esc_attr( $shape_class ); ?>"
 			style="<?php echo esc_attr( $css_vars ); ?>"
+			data-icon-variant="<?php echo esc_attr( $icon_key ); ?>"
+			data-icon-off="<?php echo esc_attr( $icon_config['off'] ); ?>"
+			data-icon-on="<?php echo esc_attr( $icon_config['on'] ); ?>"
 			role="button"
 			aria-expanded="false"
 			aria-controls="darklup-ally-panel"
 			aria-label="<?php esc_attr_e( 'Open accessibility panel', 'darklup-lite' ); ?>">
 			<?php
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- sanitized inside getIcon().
-			echo $this->getIcon( 'ally-trigger' );
+				echo $this->getIcon( $icon_name );
 			?>
 			<span class="darklup-ally-tick" aria-hidden="true"></span>
 		</button>
@@ -489,26 +569,59 @@ class Ally_Panel {
 		return wp_kses( $svg, $this->getAllowedSvgTags() );
 	}
 
+
 	/**
 	 * SVG allowlist for wp_kses.
 	 *
 	 * @return array
 	 */
+	
+	// private function getAllowedSvgTags() {
+	// 	return array(
+	// 		'svg'      => array(
+	// 			'xmlns' => true, 'width' => true, 'height' => true, 'viewbox' => true,
+	// 			'x' => true, 'y' => true,
+	// 			'fill' => true, 'fill-rule' => true, 'stroke' => true, 'stroke-width' => true,
+	// 			'stroke-linecap' => true, 'stroke-linejoin' => true,
+	// 			'preserveaspectratio' => true, 'opacity' => true,
+	// 			'aria-hidden' => true, 'role' => true, 'class' => true,
+	// 		),
+	// 		'path'     => array( 'd' => true, 'fill' => true, 'fill-rule' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'style' => true, 'opacity' => true, 'class' => true ),
+	// 		'circle'   => array( 'cx' => true, 'cy' => true, 'r' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'style' => true, 'opacity' => true, 'class' => true ),
+	// 		'line'     => array( 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'style' => true, 'opacity' => true, 'class' => true ),
+	// 		'polyline' => array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'opacity' => true ),
+	// 		'polygon'  => array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'opacity' => true ),
+	// 		'rect'     => array( 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true, 'ry' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'style' => true, 'opacity' => true, 'class' => true ),
+	// 		'g'        => array( 'id' => true, 'fill' => true, 'fill-rule' => true, 'stroke' => true, 'transform' => true, 'opacity' => true, 'class' => true ),
+	// 	);
+	// }
+
 	private function getAllowedSvgTags() {
+
 		return array(
 			'svg'      => array(
 				'xmlns' => true, 'width' => true, 'height' => true, 'viewbox' => true,
-				'fill' => true, 'stroke' => true, 'stroke-width' => true,
+				'x' => true, 'y' => true,
+				'fill' => true, 'fill-rule' => true, 'stroke' => true, 'stroke-width' => true,
 				'stroke-linecap' => true, 'stroke-linejoin' => true,
+				'preserveaspectratio' => true, 'opacity' => true,
 				'aria-hidden' => true, 'role' => true, 'class' => true,
 			),
-			'path'     => array( 'd' => true, 'fill' => true, 'stroke' => true, 'style' => true, 'opacity' => true ),
-			'circle'   => array( 'cx' => true, 'cy' => true, 'r' => true, 'fill' => true, 'stroke' => true, 'style' => true, 'opacity' => true ),
-			'line'     => array( 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true, 'stroke' => true, 'style' => true ),
-			'polyline' => array( 'points' => true, 'fill' => true, 'stroke' => true ),
-			'polygon'  => array( 'points' => true, 'fill' => true, 'stroke' => true ),
-			'rect'     => array( 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true, 'ry' => true, 'fill' => true, 'stroke' => true ),
-			'g'        => array( 'id' => true, 'fill' => true, 'stroke' => true, 'transform' => true ),
+			'title'    => array(),
+			'defs'     => array(),
+			'mask'     => array( 'id' => true ),
+			'clippath' => array( 'id' => true, 'clippathunits' => true ),
+			'use'      => array( 'href' => true, 'xlink:href' => true, 'x' => true, 'y' => true, 'width' => true, 'height' => true ),
+			'lineargradient' => array( 'id' => true, 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true, 'gradientunits' => true, 'gradienttransform' => true ),
+			'radialgradient' => array( 'id' => true, 'cx' => true, 'cy' => true, 'r' => true, 'gradientunits' => true ),
+			'stop'     => array( 'offset' => true, 'stop-color' => true, 'stop-opacity' => true ),
+			'path'     => array( 'd' => true, 'fill' => true, 'fill-rule' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'stroke-dasharray' => true, 'stroke-dashoffset' => true, 'style' => true, 'opacity' => true, 'class' => true, 'transform' => true, 'mask' => true, 'clip-path' => true ),
+			'circle'   => array( 'cx' => true, 'cy' => true, 'r' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'style' => true, 'opacity' => true, 'class' => true, 'transform' => true, 'mask' => true ),
+			'line'     => array( 'x1' => true, 'y1' => true, 'x2' => true, 'y2' => true, 'stroke' => true, 'stroke-width' => true, 'stroke-linecap' => true, 'style' => true, 'opacity' => true, 'class' => true ),
+			'polyline' => array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'opacity' => true ),
+			'polygon'  => array( 'points' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'opacity' => true ),
+			'rect'     => array( 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'rx' => true, 'ry' => true, 'fill' => true, 'stroke' => true, 'stroke-width' => true, 'style' => true, 'opacity' => true, 'class' => true, 'transform' => true, 'mask' => true ),
+			'g'        => array( 'id' => true, 'fill' => true, 'fill-rule' => true, 'stroke' => true, 'transform' => true, 'opacity' => true, 'class' => true ),
 		);
 	}
 

@@ -333,6 +333,12 @@
 
 		setTimeout( function () {
 			fixStaticSvgFills();
+
+			// Mirror the engine's result onto the trigger icon. The MutationObserver
+			// in init() normally handles this, but calling it here keeps the swap
+			// instant when the engine writes the class synchronously.
+			state.darkMode = isHtmlDarkModeEnabled();
+			updateTriggerIcon( state );
 		}, 60 );
 	}
 
@@ -512,6 +518,7 @@
 		updateAlignLabel( state );
 		updateAlignIcon( state );
 		updateTick( state );
+		updateTriggerIcon( state );
 		stampDarkIgnore();
 		announce( 'All accessibility settings have been reset.' );
 	}
@@ -740,6 +747,69 @@
 				// Replace old SVG with new one
 				svgElement.parentNode.replaceChild( newSvg, svgElement );
 			}
+		} );
+	}
+
+	/**
+	 * Swap the floating trigger icon so it reflects the current dark-mode state.
+	 *
+	 * The admin option `ally_trigger_icon` selects one of four variants; PHP
+	 * stamps the chosen "off"/"on" SVG basenames onto the trigger element as
+	 * data-icon-off / data-icon-on. Variants whose two states are identical
+	 * (the classic accessibility glyph) short-circuit and never fetch.
+	 *
+	 * @param {Object} s State object.
+	 */
+	function updateTriggerIcon( s ) {
+		var trigger = triggerEl || document.getElementById( 'darklup-ally-trigger' );
+		if ( ! trigger ) { return; }
+
+		var iconOff = trigger.getAttribute( 'data-icon-off' );
+		var iconOn  = trigger.getAttribute( 'data-icon-on' );
+		if ( ! iconOff || ! iconOn ) { return; }
+
+		var isOn    = !! ( s && s.darkMode );
+		var wanted  = isOn ? iconOn : iconOff;
+
+		// Reflect state on the element for CSS hooks (glow, etc.).
+		trigger.classList.toggle( 'darklup-ally-trigger--state-on', isOn );
+
+		// Single-state variant, or already showing the right icon — nothing to do.
+		if ( iconOff === iconOn ) { return; }
+		if ( trigger.getAttribute( 'data-icon-current' ) === wanted ) { return; }
+
+		getIconSvg( wanted ).then( function ( svgContent ) {
+			if ( ! svgContent ) { return; } // Fetch failed — keep the existing icon.
+
+			var oldSvg = trigger.querySelector( 'svg' );
+			if ( ! oldSvg ) { return; }
+
+			var temp = document.createElement( 'div' );
+			temp.innerHTML = svgContent;
+			var newSvg = temp.querySelector( 'svg' );
+			if ( ! newSvg ) { return; }
+
+			// Brief fade so the swap does not flicker.
+			trigger.classList.add( 'darklup-ally-trigger--icon-swapping' );
+
+			setTimeout( function () {
+				var current = trigger.querySelector( 'svg' );
+				if ( current && current.parentNode ) {
+					current.parentNode.replaceChild( newSvg, current );
+				}
+				trigger.setAttribute( 'data-icon-current', wanted );
+
+				// The trigger lives outside the panel, so re-stamp the dark-ignore
+				// class on the freshly injected node and all of its children.
+				newSvg.classList.add( 'darkluplite-dark-ignore' );
+				newSvg.querySelectorAll( '*' ).forEach( function ( node ) {
+					if ( node.classList ) {
+						node.classList.add( 'darkluplite-dark-ignore' );
+					}
+				} );
+
+				trigger.classList.remove( 'darklup-ally-trigger--icon-swapping' );
+			}, 140 );
 		} );
 	}
 
@@ -1009,6 +1079,7 @@
 		updateAlignLabel( state );
 		updateAlignIcon( state );
 		updateTick( state );
+		updateTriggerIcon( state );
 
 		// Re-hoist / re-check invert compensation after other scripts touch the DOM.
 		setTimeout( function () {
@@ -1120,6 +1191,7 @@
 					saveState( state );
 					updateCards( state );
 					updateTick( state );
+					updateTriggerIcon( state ); // Sun/moon, bulb and slider follow dark mode.
 					stampDarkIgnore(); // Re-stamp: dark mode mutates html class list.
 				}
 			} );

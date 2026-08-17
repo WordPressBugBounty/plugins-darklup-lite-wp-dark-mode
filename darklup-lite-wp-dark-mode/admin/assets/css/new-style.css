@@ -712,6 +712,92 @@ input.darkluplite-ajax-save:disabled{
 	.darklup-contrast-modes-container { grid-template-columns: 1fr; gap: 10px; }
 }
 
+/* ====================================================================== */
+/*   Trigger Icon picker (Accessibility / Sun & Moon / Lightbulb / Slider) */
+/* ====================================================================== */
+.darklup-ally-icon-unified-section {
+	display: flex;
+	align-items: flex-start;
+	gap: 40px;
+	padding: 20px;
+	margin: 20px 0;
+	border: 1px solid #d5d5d5;
+	border-radius: 10px;
+}
+.darklup-ally-icon-header          { flex: 0 0 250px; margin: 0; padding: 0; border: none; }
+.darklup-ally-icon-title-area h4   { color: #121212; font-size: 18px; font-weight: 700 !important; margin-bottom: 14px; display: block; }
+.darklup-ally-icon-title-area p    { margin: 0; font-size: 14px; color: #666; line-height: 1.5; }
+
+.darklup-ally-icon-choices {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 14px;
+	flex: 1;
+	--icon-accent: #2563eb;
+}
+.darklup-ally-icon-choice {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 12px;
+	background: #fbfbfb;
+	border: 2px solid #e5e5e5;
+	border-radius: 10px;
+	cursor: pointer;
+	text-align: center;
+	transition: all 0.2s ease;
+	user-select: none;
+	margin: 0;
+}
+.darklup-ally-icon-choice:hover {
+	border-color: var(--icon-accent, #2563eb);
+	box-shadow: 0 0 8px rgba(37, 99, 235, 0.15);
+	transform: translateY(-2px);
+}
+.darklup-ally-icon-choice.selected {
+	border-color: var(--icon-accent, #2563eb);
+	background: #ffffff;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+.darklup-ally-icon-choice input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+	pointer-events: none;
+}
+.darklup-ally-icon-choice input[type="radio"]:focus-visible + .darklup-ally-icon-thumb {
+	outline: 2px solid var(--icon-accent, #2563eb);
+	outline-offset: 3px;
+}
+.darklup-ally-icon-thumb {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+	border-radius: 8px;
+	overflow: hidden;
+}
+.darklup-ally-icon-thumb img {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+.darklup-ally-icon-meta  { display: flex; flex-direction: column; gap: 3px; }
+.darklup-ally-icon-name  { font-size: 14px; font-weight: 600; color: #333; line-height: 1.3; }
+.darklup-ally-icon-desc  { font-size: 12px; color: #888; line-height: 1.4; }
+.darklup-ally-icon-choice.selected .darklup-ally-icon-name { color: var(--icon-accent, #2563eb); }
+
+@media (max-width: 768px) {
+	.darklup-ally-icon-unified-section { flex-direction: column; align-items: flex-start; gap: 20px; }
+	.darklup-ally-icon-choices        { width: 100%; grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+	.darklup-ally-icon-choices        { grid-template-columns: 1fr; }
+}
+
 /* Trigger size preview circles (S/M/L/XL) */
 .darklup-ally-size-unified-section {
 	display: flex;

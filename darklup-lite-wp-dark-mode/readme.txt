@@ -4,8 +4,8 @@ Donate link: https://darklup.com/
 Tags: dark mode plugin, dark mode, dark theme, accessibility widgets, wp dark mode, accessibility, WordPress dark mode
 Requires PHP: 7.4
 Requires at least: 6.5
-Tested up to: 6.9
-Stable tag: 4.0.0
+Tested up to: 7.0.4
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,7 +169,7 @@ Experience Darklup — Your WordPress ally for dark mode, dark themes, night mod
 
 <p>By the way, we also have multiple essential plugins for WooCommerce stores. You can use these plugins to grow your Woocommerce business more efficiently.</p>
 <p>✳️ <a href="https://wordpress.org/plugins/guidant/">WP Guidant</a>  - With the help of WP Guidant, WooCommerce website owners can easily create multi-step guided selling process for the customers. It will enhance the conversion rate more efficiently.</p>
-<p>✳️  <a href="https://wordpress.org/plugins/wceazy/">wcEazy – Supercharge your WooCommerce Store</a>  - All-in-one solution WordPress plugin for optimizing WooCommerce store. Access several modules and increase the sales of your store.</p>
+<p>✳️  <a href="https://wceazy.com">wcEazy – Supercharge your WooCommerce Store</a>  - All-in-one solution WordPress plugin for optimizing WooCommerce store. Access several modules and increase the sales of your store.</p>
 
 <h3>❤️ LOVED DARKLUPLITE?</h3>
 <ul>
@@ -284,6 +284,12 @@ screenshot-3.png
 screenshot-4.png
 
 == Changelog ==
+
+= 4.0.1 =
+1. New: 3 New Accessibility Switch added.
+2. Fix: Text domain related issues
+3. Fix: Some overlapping issues
+4. New: Added compatibility with some more popular themes
 
 = 4.0.0 =
 1. New: Accessibility Switch added — a new switch style with a built-in accessibility panel for your website visitors.

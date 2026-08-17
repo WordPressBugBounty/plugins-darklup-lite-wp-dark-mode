@@ -232,6 +232,78 @@ class Style_Settings_Tab extends Settings_Fields_Base
                     'XL' => array( 'px' => '75', 'label' => 'XL' ),
                 );
                 ?>
+                <?php
+                // ╔══════════════════════════════════════════════════════════╗
+                // ║ Trigger Icon — visual picker.                            ║
+                // ║ Variants come straight from Ally_Panel::$trigger_icons so ║
+                // ║ the admin UI can never drift from the frontend renderer.  ║
+                // ╚══════════════════════════════════════════════════════════╝
+                $current_trigger_icon = \DarklupLite\Helper::getOptionData( 'ally_trigger_icon' );
+                if ( '' === $current_trigger_icon ) { $current_trigger_icon = 'accessibility'; }
+
+                $trigger_icon_choices = array(
+                    'accessibility' => array(
+                        'label' => esc_html__( 'Accessibility', 'darklup-lite' ),
+                        'desc'  => esc_html__( 'Classic universal access glyph.', 'darklup-lite' ),
+                        'thumb' => 'ally-icon-thumb-accessibility.svg',
+                    ),
+                    'sun_moon'      => array(
+                        'label' => esc_html__( 'Sun & Moon', 'darklup-lite' ),
+                        'desc'  => esc_html__( 'Sun in light mode, moon in dark mode.', 'darklup-lite' ),
+                        'thumb' => 'ally-icon-thumb-sun-moon.svg',
+                    ),
+                    'lightbulb'     => array(
+                        'label' => esc_html__( 'Lightbulb', 'darklup-lite' ),
+                        'desc'  => esc_html__( 'On/off style bulb that lights up in dark mode.', 'darklup-lite' ),
+                        'thumb' => 'ally-icon-thumb-lightbulb.svg',
+                    ),
+                    'slider'        => array(
+                        'label' => esc_html__( 'Toggle Slider', 'darklup-lite' ),
+                        'desc'  => esc_html__( 'Standard pill-shaped switch that slides on toggle.', 'darklup-lite' ),
+                        'thumb' => 'ally-icon-thumb-slider.svg',
+                    ),
+                );
+
+                // Only offer variants whose SVG assets actually ship with this build.
+                if ( class_exists( '\DarklupLite\Ally_Panel' ) && method_exists( '\DarklupLite\Ally_Panel', 'getTriggerIconVariants' ) ) {
+                    $available_variants  = \DarklupLite\Ally_Panel::getTriggerIconVariants();
+                    $trigger_icon_choices = array_intersect_key( $trigger_icon_choices, $available_variants );
+                }
+                if ( ! array_key_exists( $current_trigger_icon, $trigger_icon_choices ) ) {
+                    $current_trigger_icon = 'accessibility';
+                }
+                ?>
+                <div class="darklup-ally-icon-unified-section">
+                    <div class="darklup-ally-icon-header">
+                        <div class="darklup-ally-icon-title-area">
+                            <h4><?php esc_html_e( 'Trigger Icon', 'darklup-lite' ); ?></h4>
+                            <p><?php esc_html_e( 'Choose the icon shown on the floating accessibility button. Sun &amp; Moon, Lightbulb and Toggle Slider automatically swap between their light and dark states.', 'darklup-lite' ); ?></p>
+                        </div>
+                    </div>
+                    <div class="darklup-ally-icon-choices" style="--icon-accent: <?php echo esc_attr( $bg_color ); ?>;">
+                        <?php foreach ( $trigger_icon_choices as $icon_key => $icon_meta ) :
+                            $icon_selected_cls = ( $current_trigger_icon === $icon_key ) ? ' selected' : '';
+                            ?>
+                            <label class="darklup-ally-icon-choice<?php echo esc_attr( $icon_selected_cls ); ?>" data-icon="<?php echo esc_attr( $icon_key ); ?>">
+                                <input
+                                    type="radio"
+                                    class="darklup-ally-icon-radio"
+                                    name="darkluplite_settings[ally_trigger_icon]"
+                                    value="<?php echo esc_attr( $icon_key ); ?>"
+                                    <?php checked( $current_trigger_icon, $icon_key ); ?>
+                                />
+                                <span class="darklup-ally-icon-thumb">
+                                    <img src="<?php echo esc_url( DARKLUPLITE_DIR_URL . 'assets/img/' . $icon_meta['thumb'] ); ?>" alt="<?php echo esc_attr( $icon_meta['label'] ); ?>" />
+                                </span>
+                                <span class="darklup-ally-icon-meta">
+                                    <span class="darklup-ally-icon-name"><?php echo esc_html( $icon_meta['label'] ); ?></span>
+                                    <span class="darklup-ally-icon-desc"><?php echo esc_html( $icon_meta['desc'] ); ?></span>
+                                </span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
                 <div class="darklup-ally-size-unified-section">
                     <div class="darklup-ally-size-header">
                         <div class="darklup-ally-size-title-area">
@@ -1034,7 +1106,29 @@ class Style_Settings_Tab extends Settings_Fields_Base
             // When BG color changes, refresh the --size-color CSS custom prop.
             $(document).on('change', 'input[name="darkluplite_settings[ally_switch_bg_color]"]', function() {
                 var v = $(this).val();
-                if ( v ) { $('.darklup-ally-size-preview-icons').css('--size-color', v); }
+                if ( v ) {
+                    $('.darklup-ally-size-preview-icons').css('--size-color', v);
+                    $('.darklup-ally-icon-choices').css('--icon-accent', v);
+                }
+            });
+
+            // Trigger-icon picker: click a card to select its radio.
+            $(document).on('click', '.darklup-ally-icon-choice', function() {
+                var $choice = $(this);
+                $choice.closest('.darklup-ally-icon-choices')
+                       .find('.darklup-ally-icon-choice')
+                       .removeClass('selected');
+                $choice.addClass('selected');
+                $choice.find('.darklup-ally-icon-radio').prop('checked', true).trigger('change');
+            });
+
+            // Keep the selected class in sync for keyboard users (space/arrow keys).
+            $(document).on('change', '.darklup-ally-icon-radio', function() {
+                var $radio = $(this);
+                $radio.closest('.darklup-ally-icon-choices')
+                      .find('.darklup-ally-icon-choice')
+                      .removeClass('selected');
+                $radio.closest('.darklup-ally-icon-choice').addClass('selected');
             });
         });
         </script>

@@ -279,6 +279,101 @@
 }
 
 /* ============================================
+   2c. TRIGGER ICON VARIANTS (v4.0.1+)
+   ============================================
+
+   Admin option `ally_trigger_icon` selects one of:
+     accessibility -> classic person glyph  (circle button)
+     sun_moon      -> sun / moon pair       (circle button)
+     lightbulb     -> bulb on / off pair    (circle button)
+     slider        -> toggle slider pair    (pill button)
+
+   The PHP renderer stamps `.ally-icon-{variant}` and
+   `.ally-shape-{circle|pill}` onto #darklup-ally-trigger, and
+   darklup-ally.js swaps the inner SVG when dark mode changes.
+*/
+
+/* Smooth icon transition on state swap. */
+.darklup-ally-trigger svg {
+	transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.darklup-ally-trigger.darklup-ally-trigger--icon-swapping svg {
+	opacity: 0;
+	transform: scale(0.82);
+}
+
+/* ---- Pill shape (slider variant) -------------------------------------- */
+#darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+.darklup-ally-trigger.ally-shape-pill {
+	border-radius: 999px;
+	width: auto;
+	aspect-ratio: auto;
+}
+
+#darklup-ally-trigger.ally-shape-pill svg,
+.darklup-ally-trigger.ally-shape-pill svg {
+	width: auto;
+	height: 100%;
+	max-height: 100%;
+}
+
+/* Pill sizes — width is ~1.85x the circular diameter so the 44x24 slider
+   artwork keeps its aspect ratio without distortion. */
+#darklup-ally-trigger.ally-shape-pill.ally-size-s {
+	width: 68px;
+	height: 38px;
+	padding: 7px 10px;
+}
+#darklup-ally-trigger.ally-shape-pill.ally-size-m {
+	width: 84px;
+	height: 46px;
+	padding: 9px 12px;
+}
+#darklup-ally-trigger.ally-shape-pill.ally-size-l {
+	width: 100px;
+	height: 54px;
+	padding: 11px 14px;
+}
+#darklup-ally-trigger.ally-shape-pill.ally-size-xl {
+	width: 124px;
+	height: 68px;
+	padding: 14px 18px;
+}
+
+@media (max-width: 1024px) {
+	#darklup-ally-trigger.ally-shape-pill.ally-size-s  { width: 62px; height: 34px; padding: 6px 9px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-m  { width: 76px; height: 42px; padding: 8px 11px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-l  { width: 92px; height: 50px; padding: 10px 13px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-xl { width: 112px; height: 62px; padding: 13px 16px; }
+}
+
+@media (max-width: 768px) {
+	#darklup-ally-trigger.ally-shape-pill.ally-size-s  { width: 56px; height: 30px; padding: 5px 8px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-m  { width: 68px; height: 38px; padding: 7px 10px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-l  { width: 82px; height: 44px; padding: 8px 11px; }
+	#darklup-ally-trigger.ally-shape-pill.ally-size-xl { width: 100px; height: 54px; padding: 11px 14px; }
+}
+
+/* Slider variant paints strokes as well as fills. */
+#darklup-ally-trigger.ally-icon-slider svg rect,
+#darklup-ally-trigger.ally-icon-slider svg circle {
+	stroke: var(--ally-icon-color);
+}
+
+/* Tick badge sits over the pill's rounded corner, not the circle edge. */
+#darklup-ally-trigger.ally-shape-pill .darklup-ally-tick {
+	top: -6px;
+	right: -6px;
+}
+
+/* ---- Lightbulb / sun-moon: gentle glow when "on" ---------------------- */
+#darklup-ally-trigger.ally-icon-lightbulb.darklup-ally-trigger--state-on svg,
+#darklup-ally-trigger.ally-icon-sun-moon.darklup-ally-trigger--state-on svg {
+	filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.55));
+}
+
+/* ============================================
    3. TRIGGER TICK INDICATOR
    ============================================
 
@@ -1679,6 +1774,55 @@ html body.darklup-ally-bigger-text #darklup-ally-panel#darklup-ally-panel div.da
 .darklup-ally-card[data-locked="1"].darklup-ally-card--active {
 	background: inherit !important;
 	color: inherit !important;
+}
+
+/* =========================================================================
+   TRIGGER SHAPE IMMUNITY — MUST STAY LAST
+
+   The immunity blocks above force `border-radius: 50%` on the trigger so no
+   theme can round it differently. That is correct for the circular variants
+   but would squash the pill-shaped slider variant, so re-assert the pill here
+   with equal specificity and later source order.
+   ========================================================================= */
+html #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darklup-ally-contrast-dark #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darklup-ally-contrast-light #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darklup-ally-contrast-light .darklup-ally-trigger.ally-shape-pill,
+html.darklup-ally-contrast-high #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darklup-dark-mode-enabled #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darkluplite-dark-mode-enabled #darklup-ally-trigger.darklup-ally-trigger.ally-shape-pill,
+html.darklup-dark-mode-enabled .darklup-ally-trigger.ally-shape-pill,
+html.darkluplite-dark-mode-enabled .darklup-ally-trigger.ally-shape-pill {
+	border-radius: 999px !important;
+}
+
+/* Slider artwork uses strokes; keep them locked to the admin icon color in
+   every contrast / dark-mode combination. */
+html #darklup-ally-trigger.ally-icon-slider svg rect,
+html #darklup-ally-trigger.ally-icon-slider svg circle,
+html.darklup-ally-contrast-dark #darklup-ally-trigger.ally-icon-slider svg rect,
+html.darklup-ally-contrast-dark #darklup-ally-trigger.ally-icon-slider svg circle,
+html.darklup-ally-contrast-light #darklup-ally-trigger.ally-icon-slider svg rect,
+html.darklup-ally-contrast-light #darklup-ally-trigger.ally-icon-slider svg circle,
+html.darklup-ally-contrast-high #darklup-ally-trigger.ally-icon-slider svg rect,
+html.darklup-ally-contrast-high #darklup-ally-trigger.ally-icon-slider svg circle,
+html.darklup-dark-mode-enabled #darklup-ally-trigger.ally-icon-slider svg rect,
+html.darklup-dark-mode-enabled #darklup-ally-trigger.ally-icon-slider svg circle,
+html.darkluplite-dark-mode-enabled #darklup-ally-trigger.ally-icon-slider svg rect,
+html.darkluplite-dark-mode-enabled #darklup-ally-trigger.ally-icon-slider svg circle {
+	stroke: var(--ally-icon-color) !important;
+}
+
+/* The generic `#darklup-ally-trigger svg { width: NNpx }` size rules must not
+   stretch the wide (44x24) slider artwork — height drives the scale instead. */
+html #darklup-ally-trigger.ally-shape-pill svg,
+html.darklup-ally-contrast-dark #darklup-ally-trigger.ally-shape-pill svg,
+html.darklup-ally-contrast-light #darklup-ally-trigger.ally-shape-pill svg,
+html.darklup-ally-contrast-high #darklup-ally-trigger.ally-shape-pill svg,
+html.darklup-dark-mode-enabled #darklup-ally-trigger.ally-shape-pill svg,
+html.darkluplite-dark-mode-enabled #darklup-ally-trigger.ally-shape-pill svg {
+	width: auto !important;
+	height: 100% !important;
 }
 
 /* ============ END OF DARKLUP ALLY CSS ============ */
